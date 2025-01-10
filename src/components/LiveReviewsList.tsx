@@ -2,6 +2,7 @@
 import {useState} from 'react';
 import {Calendar, Loader, Search, Star, ThumbsUp} from 'lucide-react';
 import type {Review} from '@/types/review';
+import {AppMetadata} from "@/lib/ITunesReviewScraper";
 
 const countries = [
     { code: 'us', name: 'United States', flag: '🇺🇸' },
@@ -28,7 +29,7 @@ export default function LiveReviewsList() {
     const [error, setError] = useState<string>('');
     const [appId, setAppId] = useState<string>('1576857102');
     const [selectedCountry, setSelectedCountry] = useState<string>('us');
-
+    const [metadata, setMetadata] = useState<AppMetadata | null>(null);
     const extractNumericId = (input: string): string => {
         // Remove any 'id' prefix and extract only numbers
         return input.replace(/^id/i, '').match(/\d+/)?.[0] || '';
@@ -50,7 +51,8 @@ export default function LiveReviewsList() {
             if ('error' in data) {
                 setError(data.error);
             } else {
-                setReviews(data as Review[]);
+                setReviews(data.reviews);
+                setMetadata(data.metadata);
             }
         } catch (error) {
             setError('Failed to fetch reviews');
@@ -115,6 +117,65 @@ export default function LiveReviewsList() {
 
             {/* Main content */}
             <div className="max-w-7xl mx-auto px-4">
+
+                {metadata && (
+                    <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                        <div className="flex items-start space-x-6">
+                            {/* App Icon */}
+                            <img
+                                src={metadata.icon}
+                                alt={`${metadata.name} icon`}
+                                className="w-24 h-24 rounded-xl"
+                            />
+
+                            {/* App Info */}
+                            <div className="flex-1">
+                                <h2 className="text-2xl font-bold text-gray-900">{metadata.name}</h2>
+                                <p className="text-gray-600">{metadata.developer}</p>
+                                <div className="flex items-center mt-2">
+                                    <div className="flex items-center">
+                                        {[...Array(5)].map((_, i) => (
+                                            <Star
+                                                key={i}
+                                                className={`${
+                                                    i < Math.round(metadata.rating)
+                                                        ? 'text-yellow-400 fill-yellow-400'
+                                                        : 'text-gray-200'
+                                                }`}
+                                                size={20}
+                                            />
+                                        ))}
+                                    </div>
+                                    <span className="ml-2 text-gray-600">{metadata.rating.toFixed(1)}</span>
+                                    <span className="ml-4 text-gray-600">Version {metadata.version}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Screenshots */}
+                        {metadata.screenshots.length > 0 && (
+                            <div className="mt-6">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Screenshots</h3>
+                                <div className="flex space-x-4 overflow-x-auto pb-4">
+                                    {metadata.screenshots.map((screenshot, index) => (
+                                        <img
+                                            key={index}
+                                            src={screenshot}
+                                            alt={`${metadata.name} screenshot ${index + 1}`}
+                                            className="h-72 rounded-xl shadow-sm"
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Description */}
+                        <div className="mt-6">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Description</h3>
+                            <p className="text-gray-600 whitespace-pre-line">{metadata.description}</p>
+                        </div>
+                    </div>
+                )}
                 {/* Filters */}
                 {reviews.length > 0 && (
                     <div className="flex gap-4 mb-6">
