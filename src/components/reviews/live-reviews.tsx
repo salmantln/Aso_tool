@@ -1,0 +1,160 @@
+// 'use client';
+//
+// import { useState } from "react";
+// import { Search, Star, ThumbsUp, Calendar, Loader } from "lucide-react";
+// import type { Review } from "@/types/review";
+//
+// export default function LiveReviews() {
+//     const [reviews, setReviews] = useState<Review[]>([]);
+//     const [loading, setLoading] = useState<boolean>(false);
+//     const [searchTerm, setSearchTerm] = useState<string>("");
+//     const [selectedRating, setSelectedRating] = useState<number>(0);
+//     const [error, setError] = useState<string>("");
+//     const [appId, setAppId] = useState<string>("1576857102");
+//
+//     const fetchReviews = async (): Promise<void> => {
+//         setLoading(true);
+//         setError("");
+//         try {
+//             const response = await fetch(`/api/scrape?appId=${appId}`);
+//             const data = await response.json();
+//             if ("error" in data) {
+//                 setError(data.error);
+//             } else {
+//                 setReviews(data as Review[]);
+//             }
+//         } catch (error) {
+//             setError("Failed to fetch reviews");
+//         }
+//         setLoading(false);
+//     };
+//
+//     const filteredReviews = reviews.filter((review) => {
+//         const matchesSearch =
+//             (review.content.text?.toLowerCase() ?? "").includes(
+//                 searchTerm.toLowerCase()
+//             ) || review.title.toLowerCase().includes(searchTerm.toLowerCase());
+//         const matchesRating = selectedRating === 0 || review.rating === selectedRating;
+//         return matchesSearch && matchesRating;
+//     });
+//
+//     return (
+//         <div className="min-h-screen bg-gray-50 pb-8">
+//             {/* Header */}
+//             <div className="bg-white shadow-sm mb-6">
+//                 <div className="max-w-7xl mx-auto px-4 py-6">
+//                     <h1 className="text-3xl font-bold text-gray-900">App Store Reviews</h1>
+//
+//                     <div className="mt-4 flex flex-wrap gap-4 items-center">
+//                         <div className="flex-1 min-w-[200px]">
+//                             <input
+//                                 type="text"
+//                                 placeholder="Enter App Store ID"
+//                                 value={appId}
+//                                 onChange={(e) => setAppId(e.target.value)}
+//                                 className="px-4 py-2 border rounded-lg w-full"
+//                             />
+//                         </div>
+//                         <button
+//                             onClick={fetchReviews}
+//                             disabled={loading}
+//                             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300 flex items-center gap-2"
+//                         >
+//                             {loading && <Loader className="animate-spin" size={20} />}
+//                             {loading ? "Fetching Reviews..." : "Fetch Reviews"}
+//                         </button>
+//                         {reviews.length > 0 && (
+//                             <span className="text-gray-600">
+//                 Found {reviews.length} reviews
+//               </span>
+//                         )}
+//                     </div>
+//                 </div>
+//             </div>
+//
+//             {/* Main content */}
+//             <div className="max-w-7xl mx-auto px-4">
+//                 {/* Filters */}
+//                 {reviews.length > 0 && (
+//                     <div className="flex gap-4 mb-6">
+//                         <div className="relative flex-1">
+//                             <Search className="absolute left-3 top-2.5 text-gray-400" size={20} />
+//                             <input
+//                                 type="text"
+//                                 placeholder="Search reviews..."
+//                                 className="w-full pl-10 pr-4 py-2 border rounded-lg"
+//                                 value={searchTerm}
+//                                 onChange={(e) => setSearchTerm(e.target.value)}
+//                             />
+//                         </div>
+//                         <select
+//                             className="px-4 py-2 border rounded-lg"
+//                             value={selectedRating}
+//                             onChange={(e) => setSelectedRating(Number(e.target.value))}
+//                         >
+//                             <option value={0}>All Ratings</option>
+//                             {[5, 4, 3, 2, 1].map((rating) => (
+//                                 <option key={rating} value={rating}>
+//                                     {rating} Stars
+//                                 </option>
+//                             ))}
+//                         </select>
+//                     </div>
+//                 )}
+//
+//                 {/* Error message */}
+//                 {error && (
+//                     <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6">
+//                         {error}
+//                     </div>
+//                 )}
+//
+//                 {/* Reviews List */}
+//                 <div className="space-y-4">
+//                     {filteredReviews.map((review) => (
+//                         <div key={review.id} className="bg-white rounded-lg shadow p-6">
+//                             <div className="flex justify-between items-start mb-2">
+//                                 <h3 className="font-semibold text-lg">{review.title}</h3>
+//                                 <div className="flex items-center">
+//                                     {[...Array(5)].map((_, i) => (
+//                                         <Star
+//                                             key={i}
+//                                             className={`${
+//                                                 i < review.rating
+//                                                     ? "text-yellow-400 fill-yellow-400"
+//                                                     : "text-gray-200"
+//                                             }`}
+//                                             size={20}
+//                                         />
+//                                     ))}
+//                                 </div>
+//                             </div>
+//
+//                             <p className="text-gray-600 mb-4">{review.content.text}</p>
+//
+//                             <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+//                                 <div className="flex items-center">
+//                                     <Calendar size={16} className="mr-1" />
+//                                     {new Date(review.updated).toLocaleDateString()}
+//                                 </div>
+//                                 <div className="flex items-center">
+//                                     <ThumbsUp size={16} className="mr-1" />
+//                                     {review.voteSum}
+//                                 </div>
+//                                 <div>Version: {review.version}</div>
+//                                 <div>By: {review.author.name}</div>
+//                             </div>
+//                         </div>
+//                     ))}
+//                 </div>
+//
+//                 {/* Empty state */}
+//                 {!loading && reviews.length === 0 && !error && (
+//                     <div className="text-center text-gray-500 py-12">
+//                         Enter an App Store ID and click &#34;Fetch Reviews&#34; to begin
+//                     </div>
+//                 )}
+//             </div>
+//         </div>
+//     );
+// }
