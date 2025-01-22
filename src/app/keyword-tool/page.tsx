@@ -43,9 +43,9 @@ export default function KeywordResearchPage() {
     }, []);
 
     return (
-        <div className="h-screen flex flex-col bg-white rounded-lg shadow overflow-hidden">
+        <div className="h-screen flex flex-col bg-white rounded-lg shadow-lg overflow-hidden">
             {/* Window Controls */}
-            <div className="flex gap-2 p-2">
+            <div className="flex gap-2 p-3 bg-gray-50">
                 <div className="w-3 h-3 rounded-full bg-red-500"/>
                 <div className="w-3 h-3 rounded-full bg-yellow-500"/>
                 <div className="w-3 h-3 rounded-full bg-green-500"/>
@@ -53,19 +53,19 @@ export default function KeywordResearchPage() {
 
             <div className="flex flex-1">
                 {/* Sidebar */}
-                <div className="w-64 bg-gray-100 border-r p-4">
-                    <h2 className="text-sm font-medium mb-4">Apps</h2>
-                    <div className="flex items-center gap-3 p-3 bg-gray-200 rounded-lg mb-2">
-                        <img src="/api/placeholder/32/32" alt="App icon" className="rounded-xl" />
+                <div className="w-72 bg-gray-50 border-r border-gray-200 p-6">
+                    <h2 className="text-base font-semibold text-gray-900 mb-4">Apps</h2>
+                    <div className="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-200 mb-3 hover:border-gray-300 transition-colors">
+                        <img src="/api/placeholder/40/40" alt="App icon" className="rounded-xl" />
                         <div>
-                            <div className="text-sm font-medium">Intelligent CV: Resume Bui...</div>
-                            <div className="text-xs text-gray-500 flex items-center gap-1">
+                            <div className="text-sm font-semibold text-gray-900">Intelligent CV: Resume Bui...</div>
+                            <div className="text-xs text-gray-600 flex items-center gap-1 mt-0.5">
                                 iPhone •
                             </div>
                         </div>
                     </div>
-                    <button className="flex items-center gap-2 mt-4 text-sm text-gray-600">
-                        <Plus size={16} />
+                    <button className="flex items-center gap-2 mt-4 text-sm font-medium text-gray-700 hover:text-gray-900">
+                        <Plus size={18} />
                         Add App
                     </button>
                 </div>
@@ -73,13 +73,12 @@ export default function KeywordResearchPage() {
                 {/* Main Content */}
                 <div className="flex-1 flex flex-col">
                     {/* Header */}
-                    <div className="flex items-center justify-between p-2 border-b">
-                        <div className="flex items-center gap-4">
-                            {/*<PlatformSelector />*/}
+                    <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
+                        <div className="flex items-center gap-6">
                             <div className="flex items-center gap-2">
-                                <span className="text-sm">Keywords</span>
-                                <img src="/api/placeholder/16/16" alt="US" className="rounded" />
-                                <span className="text-sm">US</span>
+                                <span className="text-sm font-semibold text-gray-900">Keywords</span>
+                                <img src="/api/placeholder/20/20" alt="US" className="rounded" />
+                                <span className="text-sm font-medium text-gray-700">US</span>
                             </div>
 
                             {/* Keyword Input */}
@@ -93,7 +92,7 @@ export default function KeywordResearchPage() {
                                     }
                                 }}
                                 placeholder="Enter keyword..."
-                                className="px-3 py-1 border rounded-md text-sm"
+                                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
                             />
                         </div>
 
@@ -101,78 +100,84 @@ export default function KeywordResearchPage() {
                             <button
                                 onClick={() => inputKeyword.trim() && analyzeKeyword(inputKeyword.trim())}
                                 disabled={loading || !inputKeyword.trim()}
-                                className="px-4 py-1.5 bg-indigo-600 text-white rounded-md text-sm flex items-center gap-2 disabled:bg-gray-400"
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
                             >
-                                <Plus size={16} />
+                                <Plus size={18} />
                                 Add Keywords
                             </button>
-                            <div className="flex items-center gap-2">
-                                <Link size={20} className="text-gray-600" />
-                                <Settings size={20} className="text-gray-600" />
-                                <Search size={20} className="text-gray-600" />
+                            <div className="flex items-center gap-3">
+                                <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <Link size={20} />
+                                </button>
+                                <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <Settings size={20} />
+                                </button>
+                                <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <Search size={20} />
+                                </button>
                             </div>
                         </div>
                     </div>
 
                     {/* Keyword Table */}
-                    <div className="flex-1 overflow-auto">
+                    <div className="flex-1 overflow-auto bg-gray-50">
                         <table className="w-full">
                             <thead>
-                            <tr className="border-b">
-                                <th className="text-left p-3 text-sm font-medium">Keyword</th>
-                                <th className="text-left p-3 text-sm font-medium">Notes</th>
-                                <th className="text-left p-3 text-sm font-medium">Last update</th>
-                                <th className="text-left p-3 text-sm font-medium">Popularity</th>
-                                <th className="text-left p-3 text-sm font-medium">Difficulty</th>
-                                <th className="text-left p-3 text-sm font-medium">Position</th>
-                                <th className="text-left p-3 text-sm font-medium">Apps in Ranking</th>
+                            <tr className="bg-white border-b border-gray-200">
+                                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900">Keyword</th>
+                                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900">Notes</th>
+                                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900">Last update</th>
+                                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900">Popularity</th>
+                                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900">Difficulty</th>
+                                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900">Position</th>
+                                <th className="text-left py-4 px-6 text-sm font-semibold text-gray-900">Apps in Ranking</th>
                             </tr>
                             </thead>
                             <tbody>
                             {keywords.map((keyword, index) => (
-                                <tr key={index} className="border-b hover:bg-gray-50">
-                                    <td className="p-3">
-                                        <span className="text-sm">{keyword.keyword}</span>
+                                <tr key={index} className="border-b border-gray-200 bg-white hover:bg-gray-50 transition-colors">
+                                    <td className="py-4 px-6">
+                                        <span className="text-sm font-medium text-gray-900">{keyword.keyword}</span>
                                     </td>
-                                    <td className="p-3">
+                                    <td className="py-4 px-6">
                                         {keyword.notes?.map((note, i) => (
                                             <span
                                                 key={i}
-                                                className="w-2 h-2 rounded-full bg-purple-500 inline-block mr-1"
+                                                className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block mr-1"
                                             />
                                         ))}
                                     </td>
-                                    <td className="p-3">
-                                        <div className="flex items-center gap-1 text-sm text-gray-500">
-                                            <Clock size={14} />
+                                    <td className="py-4 px-6">
+                                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                                            <Clock size={16} />
                                             {keyword.lastUpdate}
                                         </div>
                                     </td>
-                                    <td className="p-3">
-                                        <MetricBar value={keyword.popularity} color="bg-yellow-400" />
+                                    <td className="py-4 px-6">
+                                        <MetricBar value={keyword.popularity} color="bg-yellow-500" />
                                     </td>
-                                    <td className="p-3">
-                                        <MetricBar value={keyword.difficulty} color="bg-red-400" />
+                                    <td className="py-4 px-6">
+                                        <MetricBar value={keyword.difficulty} color="bg-red-500" />
                                     </td>
-                                    <td className="p-3">
+                                    <td className="py-4 px-6">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-sm">#{keyword.position}</span>
-                                            <span className="text-xs text-green-500">{keyword.trend}</span>
+                                            <span className="text-sm font-medium text-gray-900">#{keyword.position}</span>
+                                            <span className="text-sm font-medium text-green-600">{keyword.trend}</span>
                                         </div>
                                     </td>
-                                    <td className="p-3">
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex -space-x-1">
+                                    <td className="py-4 px-6">
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex -space-x-2">
                                                 {[...Array(5)].map((_, i) => (
                                                     <img
                                                         key={i}
-                                                        src="/api/placeholder/24/24"
+                                                        src="/api/placeholder/28/28"
                                                         alt="Competitor app"
-                                                        className="w-6 h-6 rounded-lg border-2 border-white"
+                                                        className="w-7 h-7 rounded-lg border-2 border-white"
                                                     />
                                                 ))}
                                             </div>
-                                            <span className="text-sm text-gray-500">+{keyword.competitors}</span>
+                                            <span className="text-sm font-medium text-gray-700">+{keyword.competitors}</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -184,4 +189,5 @@ export default function KeywordResearchPage() {
             </div>
         </div>
     );
+
 }
