@@ -3,6 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { Plus, Search, Settings, Link, HelpCircle, Clock } from 'lucide-react';
 import type { KeywordData } from '@/types/apptweak';
+import {PlatformSelector} from "@/components/PlatformSelector";
 
 const MetricBar = ({ value, color = "bg-yellow-400" }) => (
     <div className="flex items-center gap-2">
@@ -20,14 +21,21 @@ export default function KeywordResearchPage() {
     const [keywords, setKeywords] = useState<KeywordData[]>([]);
     const [inputKeyword, setInputKeyword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [selectedPlatform, setSelectedPlatform] = useState<'ios' | 'android'>('ios');
+    const [selectedCountry, setSelectedCountry] = useState('us');
 
+    // Update the analyzeKeyword function
     const analyzeKeyword = useCallback(async (keyword: string) => {
         setLoading(true);
         try {
             const response = await fetch('/api/keywords', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ keyword })
+                body: JSON.stringify({
+                    keyword,
+                    platform: selectedPlatform,
+                    country: selectedCountry
+                })
             });
 
             if (!response.ok) throw new Error('Failed to fetch keyword data');
@@ -40,7 +48,28 @@ export default function KeywordResearchPage() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [selectedPlatform, selectedCountry]);
+
+    // const analyzeKeyword = useCallback(async (keyword: string) => {
+    //     setLoading(true);
+    //     try {
+    //         const response = await fetch('/api/keywords', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({ keyword })
+    //         });
+    //
+    //         if (!response.ok) throw new Error('Failed to fetch keyword data');
+    //
+    //         const data = await response.json();
+    //         setKeywords(prev => [data, ...prev]);
+    //         setInputKeyword('');
+    //     } catch (error) {
+    //         console.error('Error:', error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }, []);
 
     return (
         <div className="h-screen flex flex-col bg-white rounded-lg shadow-lg overflow-hidden">
@@ -75,11 +104,17 @@ export default function KeywordResearchPage() {
                     {/* Header */}
                     <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
                         <div className="flex items-center gap-6">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm font-semibold text-gray-900">Keywords</span>
-                                <img src="/api/placeholder/20/20" alt="US" className="rounded" />
-                                <span className="text-sm font-medium text-gray-700">US</span>
-                            </div>
+                            <PlatformSelector
+                                selectedPlatform={selectedPlatform}
+                                selectedCountry={selectedCountry}
+                                onPlatformChange={setSelectedPlatform}
+                                onCountryChange={setSelectedCountry}
+                            />
+                            {/*<div className="flex items-center gap-2">*/}
+                            {/*    <span className="text-sm font-semibold text-gray-900">Keywords</span>*/}
+                            {/*    <img src="/api/placeholder/20/20" alt="US" className="rounded"/>*/}
+                            {/*    <span className="text-sm font-medium text-gray-700">US</span>*/}
+                            {/*</div>*/}
 
                             {/* Keyword Input */}
                             <input
@@ -92,7 +127,7 @@ export default function KeywordResearchPage() {
                                     }
                                 }}
                                 placeholder="Enter keyword..."
-                                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
+                                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium placeholder:text-gray-400 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
                             />
                         </div>
 
